@@ -6,6 +6,7 @@ import { UserContext } from "../context/userContext";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { IoCartOutline } from "react-icons/io5";
+import { FaCheckCircle } from "react-icons/fa";
 
 const PhotoComponent = ({ data }) => {
   const [mainPht, setMainPht] = useState("");
@@ -104,9 +105,10 @@ const PhotoComponent = ({ data }) => {
         qty: qty,
       };
 
-      if (cnt === 1) {
-        return toast.success("Product is alrady added to the cart!");
+      if (qty === 0) {
+        return toast.error("Product quantity can not be 0!");
       } else {
+        checkAddToCartOrNot();
         await axios.post(URL + "/cart/create", payload, {
           headers: {
             Authorization: user?.token,
@@ -122,7 +124,6 @@ const PhotoComponent = ({ data }) => {
   const checkAddToCartOrNot = async () => {
     try {
       const res = await axios.get(URL + `/cart/${user?.info?._id}`);
-      console.log(res.data);
       for (let i = 0; i < res?.data.length; i++) {
         if (res?.data[i]?.prodId === id) {
           setCnt(1);
@@ -135,7 +136,7 @@ const PhotoComponent = ({ data }) => {
 
   useEffect(() => {
     checkAddToCartOrNot();
-  }, []);
+  }, [user?.info?._id, cnt]);
 
   return (
     <div className="w-[45%] h-[550px] flex flex-col items-center">
@@ -270,15 +271,24 @@ const PhotoComponent = ({ data }) => {
         </div>
       </div>
 
-      <div
-        className={`flex items-center gap-3 bg-[#FF9E00] px-20 py-3 text-white rounded-md ${
-          qty === 0 ? " cursor-not-allowed" : "cursor-pointer"
-        } font-semibold mt-5`}
-        onClick={addToCartHanndler}
-      >
-        <IoCartOutline size={26} />
-        Add To Cart
-      </div>
+      {cnt === 1 ? (
+        <div className=" flex mt-2 items-center gap-3">
+          <FaCheckCircle className=" fill-green-500" />
+          <p className=" text-green-500`">
+            This product is already added to the cart!
+          </p>
+        </div>
+      ) : (
+        <div
+          className={`flex items-center gap-3 bg-[#FF9E00] px-20 py-3 text-white rounded-md ${
+            qty === 0 ? " cursor-not-allowed" : "cursor-pointer"
+          } font-semibold mt-5`}
+          onClick={addToCartHanndler}
+        >
+          <IoCartOutline size={26} />
+          Add To Cart
+        </div>
+      )}
     </div>
   );
 };

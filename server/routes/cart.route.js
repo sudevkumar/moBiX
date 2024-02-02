@@ -31,4 +31,15 @@ router.post("/create", verifyToken, async (req, res) => {
   }
 });
 
+// Delete  a item from cart
+router.delete("/:id", async (req, res) => {
+  try {
+    await CartModel.findByIdAndDelete(req.params.id);
+    res.status(200).json("Cart item has been removes!");
+  } catch (error) {
+    res.status(500).send(error);
+    console.log(error);
+  }
+});
+
 module.exports = router;

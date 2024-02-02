@@ -7,14 +7,14 @@ import { Toaster } from "react-hot-toast";
 import SellerRegister from "./pages/SellerRegister";
 import CreatePost from "./pages/CreatePost";
 import SellerDashBoard from "./pages/SellerDashBoard";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { UserContext } from "./context/userContext";
 import NotAuthorize from "./pages/NotAuthorize";
 import SellerUpdate from "./pages/SellerUpdate";
 import GetProductDetails from "./pages/GetProductDetails";
-import axios from "axios";
-import { URL } from "./utils/URL";
 import Cart from "./pages/Cart";
+import Address from "./pages/Address";
+import Favorite from "./pages/Favorite";
 
 function App() {
   const { user } = useContext(UserContext);
@@ -34,6 +34,8 @@ function App() {
             user?.token && !user?.info?.role ? <Cart /> : <NotAuthorize />
           }
         />
+        <Route path="/address" element={<Address />} />
+        <Route path="/favorite" element={<Favorite />} />
 
         {/* Seller Side */}
         <Route path="/sellerRegister" element={<SellerRegister />} />

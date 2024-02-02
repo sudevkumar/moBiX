@@ -20,9 +20,6 @@ const Navbar = () => {
   const naviagte = useNavigate();
   const location = useLocation();
   const users = JSON.parse(localStorage.getItem("token"));
-  console.log(users);
-
-  console.log(location);
 
   const handleLogOut = () => {
     localStorage.removeItem("token");
@@ -49,7 +46,7 @@ const Navbar = () => {
 
   useEffect(() => {
     checkAddToCartOrNot();
-  }, [users?.info?._id]);
+  }, [users?.info?._id, cartQty]);
 
   const goToCartPage = () => {
     naviagte("/cart");
@@ -194,10 +191,12 @@ const Navbar = () => {
           </p>
 
           {!user?.info?.role && (
-            <p className=" p-3 flex gap-2 items-center font-light cursor-pointer">
-              <CiHeart size={22} />
-              Wishlist
-            </p>
+            <Link to={"/favorite"}>
+              <p className=" p-3 flex gap-2 items-center font-light cursor-pointer">
+                <CiHeart size={22} />
+                Wishlist
+              </p>
+            </Link>
           )}
 
           {!user?.info?.role && (

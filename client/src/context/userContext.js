@@ -16,8 +16,6 @@ export function UserContextProvider({ children }) {
     } else if (logUser !== null && !logUser?.info?.role) {
       setUser(logUser);
       navigate("/");
-    } else {
-      setUser(logUser);
     }
   };
 
