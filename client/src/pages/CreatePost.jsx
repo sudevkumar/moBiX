@@ -263,7 +263,7 @@ const CreatePost = () => {
       });
 
       setLoading(false);
-      naviagte("/xxx");
+      naviagte("/sellerdashboard");
       toast.success("Post created successfully!");
     } catch (error) {
       console.error(error);

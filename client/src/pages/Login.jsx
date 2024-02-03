@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/userContext";
 import { URL } from "../utils/URL";
 
-const Login = () => {
+const Login = ({ getCartDataFromUserId }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setUser, getUser } = useContext(UserContext);
@@ -25,17 +25,20 @@ const Login = () => {
         "token",
         JSON.stringify({ token: res?.data?.token, info: res?.data?.user })
       );
+
       if (res?.data?.user?.role) {
-        getUser();
         naviagte("/sellerdashboard");
         toast.success(`Welcome back ${res?.data?.user?.name}`);
-      } else {
         getUser();
+      } else {
         naviagte("/", { state: res?.data?.user?._id });
         toast.success(`Welcome back ${res?.data?.user?.name}`);
+        getCartDataFromUserId();
+        getUser();
       }
     } catch (error) {
-      console.log(error);
+      console.log(error?.response);
+      toast.error(error?.response?.data);
     }
   };
 

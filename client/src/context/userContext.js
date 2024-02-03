@@ -6,6 +6,7 @@ export const UserContext = createContext({});
 export function UserContextProvider({ children }) {
   const [user, setUser] = useState(null);
   const [logOut, setLogOut] = useState(false);
+  const [cartQty, setCartQty] = useState(0);
   const navigate = useNavigate();
 
   const getUser = () => {
@@ -13,24 +14,20 @@ export function UserContextProvider({ children }) {
     if (logUser?.info?.role) {
       setUser(logUser);
       navigate("/sellerdashboard");
-    } else if (logUser !== null && !logUser?.info?.role) {
+    } else if (!logUser?.info?.role) {
       setUser(logUser);
       navigate("/");
     }
   };
 
-  // useEffect(() => {
-  //   getUser();
-  // }, []);
-
   useEffect(() => {
     getUser();
   }, [logOut]);
 
-  // useEffect(() => {}, [logOut]);
-
   return (
-    <UserContext.Provider value={{ user, setUser, logOut, setLogOut, getUser }}>
+    <UserContext.Provider
+      value={{ user, setUser, logOut, setLogOut, getUser, setCartQty, cartQty }}
+    >
       {children}
     </UserContext.Provider>
   );

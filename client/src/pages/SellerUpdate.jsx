@@ -168,7 +168,7 @@ const SellerUpdate = () => {
 
       setLoading(false);
       naviagte("/sellerdashboard");
-      toast.success("Post created successfully!");
+      toast.success("Post updated successfully!");
     } catch (error) {
       console.error(error);
       toast.error("Please try again later!");
@@ -569,7 +569,7 @@ const SellerUpdate = () => {
           className="px-3 py-2 w-[80%] text-white bg-[#2A55E5] rounded-md"
           onClick={updateProductHandler}
         >
-          {loading ? "Loding..." : "Create A Post"}
+          {loading ? "Loding..." : "Update A Post"}
         </button>
       </div>
     </div>

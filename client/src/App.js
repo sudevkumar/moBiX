@@ -15,18 +15,38 @@ import GetProductDetails from "./pages/GetProductDetails";
 import Cart from "./pages/Cart";
 import Address from "./pages/Address";
 import Favorite from "./pages/Favorite";
+import axios from "axios";
+import { URL } from "./utils/URL";
+import ShowMobiles from "./pages/ShowMobiles";
 
 function App() {
-  const { user } = useContext(UserContext);
+  const { setCartQty, user } = useContext(UserContext);
+  // const user = JSON.parse(localStorage.getItem("token"));
+  const getCartDataFromUserId = async () => {
+    try {
+      const res = await axios.get(URL + `/cart/${user?.info?._id}`);
+      setCartQty(res?.data?.length);
+      console.log(res?.data?.length, "Called", user);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className=" relative w-full">
       <Toaster />
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} exact />
+        <Route
+          path="/"
+          element={<Home getCartDataFromUserId={getCartDataFromUserId} />}
+          exact
+        />
         <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          element={<Login getCartDataFromUserId={getCartDataFromUserId} />}
+        />
         <Route path="/product/details/:id" element={<GetProductDetails />} />
         <Route
           path="/cart"
@@ -36,10 +56,10 @@ function App() {
         />
         <Route path="/address" element={<Address />} />
         <Route path="/favorite" element={<Favorite />} />
+        <Route path="/mobiles/:id" element={<ShowMobiles />} />
 
         {/* Seller Side */}
-        <Route path="/sellerRegister" element={<SellerRegister />} />
-        <Route path="/sellerLogin" element={<SellerRegister />} />
+        <Route path="/sellerregister" element={<SellerRegister />} />
 
         <Route
           path="/createpost"

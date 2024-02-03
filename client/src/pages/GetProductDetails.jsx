@@ -60,7 +60,10 @@ const GetProductDetails = () => {
         <p className=" text-[14px] flex gap-1 items-center text-green-600">
           You have saved
           <span className=" text-[14px] text-green-800">
-            {data.price - calculateDiscountedPrice(data?.price, data?.discount)}
+            {(
+              data?.price -
+              calculateDiscountedPrice(data?.price, data?.discount)
+            ).toFixed(2)}
           </span>
           in this product.
         </p>

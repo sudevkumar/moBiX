@@ -11,14 +11,21 @@ import { FaCheckCircle } from "react-icons/fa";
 const PhotoComponent = ({ data }) => {
   const [mainPht, setMainPht] = useState("");
   const [favoriteList, setFavoriteList] = useState([]);
-  const { user } = useContext(UserContext);
+  const { user, setCartQty } = useContext(UserContext);
   const { id } = useParams();
   const [qty, setQty] = useState(0);
   const [cnt, setCnt] = useState(0);
+  const [checked, setChecked] = useState(false);
+  // const {cartQty, setCartQty} = useContext(UserContext);
 
   const getAllFavorites = async () => {
     try {
-      const res = await axios.get(URL + `/favorite/prod/${user?.info?._id}`);
+      const res = await axios.get(URL + `/favorite/prod/${user?.info?._id}`, {
+        headers: {
+          Authorization: user?.token,
+          "Content-type": "application/json",
+        },
+      });
       setFavoriteList(res?.data);
     } catch (error) {
       console.log(error);
@@ -91,6 +98,9 @@ const PhotoComponent = ({ data }) => {
   };
 
   const addToCartHanndler = async () => {
+    if (!user?.toast) {
+      return toast.error("Login first to add products to our cart!");
+    }
     try {
       const payload = {
         title: data?.title,
@@ -108,7 +118,6 @@ const PhotoComponent = ({ data }) => {
       if (qty === 0) {
         return toast.error("Product quantity can not be 0!");
       } else {
-        checkAddToCartOrNot();
         await axios.post(URL + "/cart/create", payload, {
           headers: {
             Authorization: user?.token,
@@ -116,6 +125,8 @@ const PhotoComponent = ({ data }) => {
           },
         });
       }
+      toast.success("Item is added to cart successfully!");
+      checkAddToCartOrNot();
     } catch (error) {
       console.log(error);
     }
@@ -124,11 +135,9 @@ const PhotoComponent = ({ data }) => {
   const checkAddToCartOrNot = async () => {
     try {
       const res = await axios.get(URL + `/cart/${user?.info?._id}`);
-      for (let i = 0; i < res?.data.length; i++) {
-        if (res?.data[i]?.prodId === id) {
-          setCnt(1);
-        }
-      }
+      const findAddToCartProduct = res?.data?.find((ele) => ele.prodId === id);
+      setChecked(findAddToCartProduct === undefined ? false : true);
+      setCartQty(res?.data?.length);
     } catch (error) {
       console.log(error);
     }
@@ -136,7 +145,7 @@ const PhotoComponent = ({ data }) => {
 
   useEffect(() => {
     checkAddToCartOrNot();
-  }, [user?.info?._id, cnt]);
+  }, [checked]);
 
   return (
     <div className="w-[45%] h-[550px] flex flex-col items-center">
@@ -145,7 +154,7 @@ const PhotoComponent = ({ data }) => {
         <div className="flex flex-col gap-2 w-[17%]">
           {mainPht === "" ? (
             <div
-              className={`h-[110px] border-2 border-blue-500 cursor-pointer shadow-sm shadow-blue-800`}
+              className={`h-[80px] border-2 border-blue-500 cursor-pointer shadow-sm shadow-blue-800`}
               onClick={() => setMainPht(`${data?.mainPhoto}`)}
             >
               <img
@@ -156,7 +165,7 @@ const PhotoComponent = ({ data }) => {
             </div>
           ) : (
             <div
-              className={`h-[110px] border border-blue-500 ${
+              className={`h-[80px] border border-blue-500 ${
                 mainPht === data?.mainPhoto &&
                 "border-2 border-blue-500 shadow-sm shadow-blue-800"
               } cursor-pointer`}
@@ -170,7 +179,7 @@ const PhotoComponent = ({ data }) => {
             </div>
           )}
           <div
-            className={`h-[110px] border border-blue-500 ${
+            className={`h-[80px] border border-blue-500 ${
               mainPht === data?.secondPhoto &&
               "border-2 border-blue-500 shadow-sm shadow-blue-800"
             } cursor-pointer`}
@@ -183,7 +192,7 @@ const PhotoComponent = ({ data }) => {
             />
           </div>
           <div
-            className={`h-[110px] border border-blue-500 ${
+            className={`h-[80px] border border-blue-500 ${
               mainPht === data?.thirdPhoto &&
               "border-2 border-blue-500 shadow-sm shadow-blue-800"
             } cursor-pointer`}
@@ -192,7 +201,7 @@ const PhotoComponent = ({ data }) => {
             <img className="h-full" src={data?.thirdPhoto} alt="" />
           </div>
           <div
-            className={`h-[110px] border border-blue-500 ${
+            className={`h-[80px] border border-blue-500 ${
               mainPht === data?.fourthPhoto &&
               "border-2 border-blue-500 shadow-sm shadow-blue-800"
             } cursor-pointer`}
@@ -201,7 +210,7 @@ const PhotoComponent = ({ data }) => {
             <img className="h-full" src={data?.fourthPhoto} alt="" />
           </div>
           <div
-            className={`h-[110px] border border-blue-500 ${
+            className={`h-[80px] border border-blue-500 ${
               mainPht === data?.fifthPhoto &&
               "border-2 border-blue-500 shadow-sm shadow-blue-800"
             } cursor-pointer`}
@@ -217,7 +226,7 @@ const PhotoComponent = ({ data }) => {
 
         {/* main photo */}
 
-        <div className=" w-[80%] h-full relative border">
+        <div className=" w-[80%] h-[500px] relative border">
           {mainPht === "" ? (
             <img
               className=" w-full h-full object-contain"
@@ -271,7 +280,7 @@ const PhotoComponent = ({ data }) => {
         </div>
       </div>
 
-      {cnt === 1 ? (
+      {checked === true ? (
         <div className=" flex mt-2 items-center gap-3">
           <FaCheckCircle className=" fill-green-500" />
           <p className=" text-green-500`">

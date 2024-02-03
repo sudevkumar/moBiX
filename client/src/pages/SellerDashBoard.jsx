@@ -61,7 +61,7 @@ const SellerDashBoard = () => {
   };
 
   return (
-    <div className=" w-full relative p-6 top-14 border bg-[#F1F2F4]">
+    <div className=" w-full relative p-6 top-14 border bg-[#F1F2F4] min-h-[92vh]">
       <h1 className=" text-3xl">All Your Products</h1>
       <h3 className=" text-gray-400">
         You can delete and update your products from here!
@@ -79,11 +79,11 @@ const SellerDashBoard = () => {
               <img
                 src={pro.mainPhoto}
                 alt={pro.title}
-                className=" h-60 w-full"
+                className=" h-60 w-full object-contain"
               />
               <p className=" text-sm font-bold">
-                {pro.title.length > 28
-                  ? pro.title.substring(0, 28) + "..."
+                {pro.title.length > 25
+                  ? pro.title.substring(0, 25) + "..."
                   : pro.title}
               </p>
 

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { IoIosSearch, IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { IoCartOutline } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
@@ -7,19 +7,14 @@ import { SiQzone } from "react-icons/si";
 import { PiPackageThin, PiGiftLight } from "react-icons/pi";
 import { CiHeart, CiCreditCard1 } from "react-icons/ci";
 import { UserContext } from "../context/userContext";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import axios from "axios";
-import { URL } from "../utils/URL";
 
 const Navbar = () => {
   const [mouseEnter, setMouseEnter] = useState(false);
-  const { user } = useContext(UserContext);
-  const { logOut, setLogOut } = useContext(UserContext);
-  const [cartQty, setCartQty] = useState(0);
+  const { user, setUser } = useContext(UserContext);
+  const { logOut, setLogOut, cartQty, setCartQty } = useContext(UserContext);
   const naviagte = useNavigate();
-  const location = useLocation();
-  const users = JSON.parse(localStorage.getItem("token"));
 
   const handleLogOut = () => {
     localStorage.removeItem("token");
@@ -31,22 +26,14 @@ const Navbar = () => {
 
   const handleBecomeASeller = () => {
     localStorage.removeItem("token");
-    setLogOut(!logOut);
-    naviagte("/sellerLogin");
-  };
-
-  const checkAddToCartOrNot = async () => {
-    try {
-      const res = await axios.get(URL + `/cart/${users?.info?._id}`);
-      setCartQty(res?.data?.length);
-    } catch (error) {
-      console.log(error);
+    if (user?.token) {
+      setCartQty(0);
+      setUser(null);
+      naviagte("/sellerregister");
+    } else {
+      naviagte("/sellerregister");
     }
   };
-
-  useEffect(() => {
-    checkAddToCartOrNot();
-  }, [users?.info?._id, cartQty]);
 
   const goToCartPage = () => {
     naviagte("/cart");
@@ -84,7 +71,7 @@ const Navbar = () => {
             onMouseEnter={() => setMouseEnter(true)}
           >
             <FaRegUserCircle size={16} className="font-light" />
-            <p>{user?.info?.name}</p>
+            <p>{user?.info?.name.substring(0, 5)}</p>
             <p>
               {mouseEnter ? (
                 <IoIosArrowUp size={16} className="font-light" />

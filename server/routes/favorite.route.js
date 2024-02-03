@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Get Fav Id
 
-router.get("/prod/:userId", async (req, res) => {
+router.get("/prod/:userId", verifyToken, async (req, res) => {
   try {
     const fav = await FavoriteModel.find({
       userId: req.params.userId,
